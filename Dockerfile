@@ -1,9 +1,7 @@
 FROM n8nio/n8n:latest
 
-# Si tu veux installer des packages supplémentaires
-# RUN npm install -g <package>
-
+# Expose le port
 EXPOSE 5678
 
-CMD ["n8n"]
-  
+# Définit la commande par défaut
+CMD ["n8n", "start"]
