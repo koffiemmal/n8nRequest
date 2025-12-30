@@ -1,0 +1,51 @@
+services:
+  - type: web
+    runtime: docker
+    name: n8n
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      # 🔐 Sécurité n8n
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: "true"
+      - key: N8N_BASIC_AUTH_USER
+        generateValue: true
+      - key: N8N_BASIC_AUTH_PASSWORD
+        generateValue: true
+
+      # 🌐 URLs
+      - key: N8N_HOST
+        fromService:
+          type: web
+          name: n8n
+          property: host
+      - key: N8N_PROTOCOL
+        value: https
+      - key: WEBHOOK_URL
+        fromService:
+          type: web
+          name: n8n
+          property: host
+
+      # ⚠️ Port n8n FIXE
+      - key: N8N_PORT
+        value: "5678"
+
+      # 🟢 FORCER MYSQL (OBLIGATOIRE)
+      - key: DB_TYPE
+        value: mysql
+
+      # 🟢 TiDB Cloud (valeurs NON sensibles)
+      - key: DB_MYSQLDB_HOST
+        value: gateway01.eu-central-1.prod.aws.tidbcloud.com
+      - key: DB_MYSQLDB_PORT
+        value: "4000"
+      - key: DB_MYSQLDB_DATABASE
+        value: test
+
+      # 🔐 TLS
+      - key: DB_MYSQLDB_SSL_REJECT_UNAUTHORIZED
+        value: "true"
+
+    healthCheckPath: /
